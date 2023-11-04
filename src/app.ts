@@ -1,26 +1,16 @@
 import cors from "cors";
 import express from "express";
 import proxy from "express-http-proxy";
+import path from "path";
+
 require("dotenv").config();
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+console.log(path.join(__dirname, "scripts"));
 
-app.use(
-	"/ampproject",
-	proxy("https://cdn.ampproject.org", {
-		memoizeHost: true,
-		timeout: 60 * 1000,
-		userResDecorator: async function (proxyRes, proxyResData, userReq, userRes) {
-			const response = await fetch("https://cdn.ampproject.org" + userReq.path);
-
-			const body = await response.text();
-
-			return body;
-		},
-	}),
-);
+app.use("/ampproject", express.static(path.join(__dirname, "scripts")));
 
 app.use(
 	"/",
