@@ -12,6 +12,13 @@ app.use(
 	proxy("https://cdn.ampproject.org", {
 		memoizeHost: true,
 		timeout: 60 * 1000,
+		userResDecorator: async function (proxyRes, proxyResData, userReq, userRes) {
+			const response = await fetch("https://cdn.ampproject.org" + userReq.path);
+
+			const body = await response.text();
+
+			return body;
+		},
 	}),
 );
 
