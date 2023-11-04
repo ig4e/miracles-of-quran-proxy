@@ -8,7 +8,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-console.log(path.join(__dirname, "scripts"));
 
 app.use("/ampproject", express.static(path.join(__dirname, "scripts")));
 
@@ -26,13 +25,11 @@ app.use(
 
 		userResDecorator: async function (proxyRes, proxyResData, userReq, userRes) {
 			const response = await fetch("https://www.miracles-of-quran.com" + userReq.path);
-
 			if (!response.headers.get("content-type")?.includes("text")) return proxyResData;
-			console.log(response.headers.get("content-type")?.includes("text"));
 
 			const body = await response.text();
 			const filterdBody = body.replaceAll("https://cdn.ampproject.org", "/ampproject");
-
+      
 			return filterdBody;
 		},
 	}),
